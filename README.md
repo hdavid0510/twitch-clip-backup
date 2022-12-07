@@ -6,19 +6,27 @@ Batch download twitch clips with [twitch-dl](https://github.com/ihabunek/twitch-
 ## Requirements
 
 * Ubuntu 20.04 with python3 installed
-	* confirmed working on WSL
+	* Use WSL if using Windows!
 
 
 ## How to use
-* Clone this repository.
-* Edit `dl.sh`.
-	* Fill in `STREAMER` with the streamer's ID
-	* Fill in `AUTHTOKEN` with your twitch auth_token - refer [documentation](https://twitch-dl.bezdomni.net/commands/download.html#downloading-subscriber-only-vods) for details.
-* Run `dl.sh`.
-	* Clips of `STREAMER` will stored inside the directory `STREAMER`.
-	* JSON clip list file will also be saved in the directory `STREAMER`.
 
+### Download
+Clone Git repository
+```
+git clone https://github.com/hdavid0510/twitch-clip-backup
+```
+...or download [script](https://github.com/hdavid0510/twitch-clip-backup/blob/master/dl.sh) directly.
 
+### Run
+```
+dl.sh DIRECTORY STREAMERID TWITCHTOKEN
+```
+* `DIRECTORY`: Directory to download clips and twitch-dl binary.
+* `STREAMERID`: ID of twitch streamer.
+* `TWITCHTOKEN`: Twitch auth token. Refer [documentation](https://twitch-dl.bezdomni.net/commands/download.html#downloading-subscriber-only-vods) for details.
+
+  
 
 # 트위치 클립 다운로더
 
@@ -28,14 +36,22 @@ Batch download twitch clips with [twitch-dl](https://github.com/ihabunek/twitch-
 ## 요구사항
 
 * python3이 설치된 Ubuntu 20.04
-	* 윈도우 환경의 경우 WSL을 이용하면 사용 가능합니다.
+	* 윈도우 환경의 경우 WSL을 통해서도 사용 가능합니다.
 
 
 ## 사용방법
-* 이 리포지토리를 내려받으세요(clone).
-* `dl.sh`파일을 수정하세요.
-	* `STREAMER`에 스트리머의 채널 ID를 입력하세요.
-	* `AUTHTOKEN`에 자신의 트위치 auth_token을 입력하세요. 자세한 설명은 [문서(영문)](https://twitch-dl.bezdomni.net/commands/download.html#downloading-subscriber-only-vods)를 참조해주시기 바랍니다.
-* `dl.sh`을 실행합니다.
-	* `STREAMER`의 클립은 스트리머 ID로 된 폴더가 생성되고 그 안에 저장됩니다.
-	* 클립 목록 파일 또한 스트리머 ID로 된 폴더 안에 JSON 형식으로 저장됩니다.
+
+### 내려받기
+Git 리포지토리를 클론하거나
+```
+git clone https://github.com/hdavid0510/twitch-clip-backup
+```
+...[스크립트](https://github.com/hdavid0510/twitch-clip-backup/blob/master/dl.sh) 파일 직접 내려받으세요.
+
+### 실행
+```
+dl.sh 디렉터리 스트리머ID 트위치토큰
+```
+* `디렉터리`: 클립과 twitch-dl을 다운받을 위치(폴더)입니다.
+* `스트리머ID`: 트위치 스트리머의 ID입니다.
+* `트위치토큰`: 자신의 트위치 토큰입니다. 자세한 설명은 [문서(영문)](https://twitch-dl.bezdomni.net/commands/download.html#downloading-subscriber-only-vods)를 참조해주시기 바랍니다.
