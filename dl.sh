@@ -21,15 +21,30 @@ STREAMER="$2"
 AUTHTOKEN="$3"
 
 
+## Get python3
+
+echo -e "\n\e[93mInstalling python3\e[0m"
+PYTHON3="python3"
+ispyinstalled=$(dpkg-query -W --showformat='${Status}\n' python3|grep "install ok installed")
+if [ "" = "${ispyinstalled}}" ]; then
+	sudo apt -qq  update
+	sudo apt -qqy install python3
+else
+	echo "$(${PYTHON3} --version) already present, skipping installation."
+	
+fi
+
+
 ## Get jq (for JSON parsing)
 
-echo -e "\n\e[93mInstalling jq for JSON parsing\e[0m"
+echo -e "\n\e[93mInstalling jq (JSON parser)\e[0m"
+JQ="jq"
 isjqinstalled=$(dpkg-query -W --showformat='${Status}\n' jq|grep "install ok installed")
 if [ "" = "${isjqinstalled}}" ]; then
 	sudo apt -qq  update
 	sudo apt -qqy install jq
 else
-	echo "$(jq --version) already present, skipping installation."
+	echo "$(${JQ} --version) already present, skipping installation."
 	
 fi
 
@@ -67,29 +82,28 @@ fi
 
 ## Get twitch-dl
 TWITCHDL_REPO="https://github.com/ihabunek/twitch-dl/releases/download/2.0.1/twitch-dl.2.0.1.pyz"
-TWITCHDL_BIN="${DOWNLOAD_DIR}/twitch-dl"
+TWITCHDL="${DOWNLOAD_DIR}/twitch-dl"
 
 echo -e "\n\e[93mFetching twitch-dl\e[0m"
-if [ -f ${TWITCHDL_BIN} ]; then
+if [ -f ${TWITCHDL} ]; then
 	echo "twitch-dl already exists, skipping download."
 else
-	wget -q ${TWITCHDL_REPO} -O ${TWITCHDL_BIN}
+	wget -q ${TWITCHDL_REPO} -O ${TWITCHDL}
 fi
-chmod +x ${TWITCHDL_BIN}
-./${TWITCHDL_BIN} --version
+chmod +x ${TWITCHDL}
+${PYTHON3} ${TWITCHDL} --version
 
 
 ## Download list into json
 
 echo -e "\n\e[93mFetching clip list\e[0m"
-echo + ./${TWITCHDL_BIN} clips ${STREAMER} --json --all > ${DOWNLOAD_DIR}/${STREAMER}/twitchclips.${STREAMER}.json
-./${TWITCHDL_BIN} clips ${STREAMER} --json --all > ${DOWNLOAD_DIR}/${STREAMER}/twitchclips.${STREAMER}.json
+${PYTHON3} ${TWITCHDL} clips ${STREAMER} --json --all > ${DOWNLOAD_DIR}/${STREAMER}/twitchclips.${STREAMER}.json
 
 
 ## Parse list json
 
 echo -e "\n\e[93mExtracting clip URLS from clip list\e[0m"
-clips=( $(jq -r '.[].slug' ${DOWNLOAD_DIR}/${STREAMER}/twitchclips.${STREAMER}.json) )
+clips=( $(${JQ} -r '.[].slug' ${DOWNLOAD_DIR}/${STREAMER}/twitchclips.${STREAMER}.json) )
 echo -e "${#clips[@]} clips found!"
 
 ## Download!
@@ -99,5 +113,5 @@ TMP="${DOWNLOAD_DIR}/.twitchdltemp/${STREAMER}"
 echo -e "\n\e[93mDownloading clips!\e[0m"
 for i in "${!clips[@]}"; do 
 	printf "\n%d of %d %3d%%\t%s\n" "$((i+1))" "${#clips[@]}" "$((100*(i+1)/${#clips[@]}))" "${clips[$i]}"
-	./${TWITCHDL_BIN} download --overwrite -q source --auth-token ${AUTHTOKEN} --output ${DOWNLOAD_DIR}/${STREAMER}/${NAMEFORMAT} ${clips[$i]}
+	${PYTHON3} ${TWITCHDL} download --overwrite -q source --auth-token ${AUTHTOKEN} --output ${DOWNLOAD_DIR}/${STREAMER}/${NAMEFORMAT} ${clips[$i]}
 done
