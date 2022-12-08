@@ -106,6 +106,7 @@ echo -e "\n\e[93mExtracting clip URLS from clip list\e[0m"
 clips=( $(${JQ} -r '.[].slug' ${DOWNLOAD_DIR}/${STREAMER}/twitchclips.${STREAMER}.json) )
 echo -e "${#clips[@]} clips found!"
 
+
 ## Download!
 NAMEFORMAT="{channel_login}__{datetime}__{game}__{id}__{title}.{format}"
 TMP="${DOWNLOAD_DIR}/.twitchdltemp/${STREAMER}"
@@ -114,4 +115,14 @@ echo -e "\n\e[93mDownloading clips!\e[0m"
 for i in "${!clips[@]}"; do 
 	printf "\n%d of %d %3d%%\t%s\n" "$((i+1))" "${#clips[@]}" "$((100*(i+1)/${#clips[@]}))" "${clips[$i]}"
 	${PYTHON3} ${TWITCHDL} download --overwrite -q source --auth-token ${AUTHTOKEN} --output ${DOWNLOAD_DIR}/${STREAMER}/${NAMEFORMAT} ${clips[$i]}
+done
+
+
+## Remove invalid character in filename
+
+echo -e "\n\e[93mCorrecting invalid filename.\e[0m"
+for v in ${DOWNLOAD_DIR}/${STREAMER}/*.mp4; do
+	if [ ! -z "$(ls $f | grep : )" ]; then
+		mv "$f" "$(echo $f|sed 's/://g')"
+	fi
 done
