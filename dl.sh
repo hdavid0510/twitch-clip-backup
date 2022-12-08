@@ -121,8 +121,12 @@ done
 ## Remove invalid character in filename
 
 echo -e "\n\e[93mCorrecting invalid filename.\e[0m"
-for v in ${DOWNLOAD_DIR}/${STREAMER}/*.mp4; do
-	if [ ! -z "$(ls $f | grep : )" ]; then
-		mv "$f" "$(echo $f|sed 's/://g')"
+cd ${DOWNLOAD_DIR}/${STREAMER}
+i=0
+for v in *.mp4; do
+	i = $((i+1))
+	printf "Checked %d of %d %3d%%\n" "$i" "${#clips[@]}" "$((100*(i+1)/${#clips[@]}))"
+	if [ ! -z "$(ls "$v" | grep : )" ]; then
+		mv "$v" "$(echo $v|sed 's/://g')"
 	fi
 done
