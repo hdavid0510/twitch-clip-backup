@@ -26,7 +26,7 @@ AUTHTOKEN="$3"
 echo -e "\n\e[93mInstalling python3\e[0m"
 PYTHON3="python3"
 ispyinstalled=$(dpkg-query -W --showformat='${Status}\n' python3|grep "install ok installed")
-if [ "" = "${ispyinstalled}}" ]; then
+if [ "" = "${ispyinstalled}" ]; then
 	sudo apt -qq  update
 	sudo apt -qqy install python3
 else
@@ -40,11 +40,25 @@ fi
 echo -e "\n\e[93mInstalling jq (JSON parser)\e[0m"
 JQ="jq"
 isjqinstalled=$(dpkg-query -W --showformat='${Status}\n' jq|grep "install ok installed")
-if [ "" = "${isjqinstalled}}" ]; then
+if [ "" = "${isjqinstalled}" ]; then
 	sudo apt -qq  update
 	sudo apt -qqy install jq
 else
 	echo "$(${JQ} --version) already present, skipping installation."
+	
+fi
+
+
+## Get uni2ascii (for Unicode encoding)
+
+echo -e "\n\e[93mInstalling uni2ascii\e[0m"
+UNI2ASCII="uni2ascii"
+isuni2asciiinstalled=$(dpkg-query -W --showformat='${Status}\n' uni2ascii|grep "install ok installed")
+if [ "" = "${isuni2asciiinstalled}" ]; then
+	sudo apt -qq  update
+	sudo apt -qqy install uni2ascii
+else
+	echo "$(${UNI2ASCII} -v) already present, skipping installation."
 	
 fi
 
@@ -81,6 +95,7 @@ fi
 
 
 ## Get twitch-dl
+
 TWITCHDL_REPO="https://github.com/ihabunek/twitch-dl/releases/download/2.0.1/twitch-dl.2.0.1.pyz"
 TWITCHDL="${DOWNLOAD_DIR}/twitch-dl"
 
@@ -94,10 +109,10 @@ chmod +x ${TWITCHDL}
 ${PYTHON3} ${TWITCHDL} --version
 
 
-## Download list into json
+## Download list into json, encode unicode('\uXXXX') as well
 
 echo -e "\n\e[93mFetching clip list\e[0m"
-${PYTHON3} ${TWITCHDL} clips ${STREAMER} --json --all > ${DOWNLOAD_DIR}/${STREAMER}/twitchclips.${STREAMER}.json
+${PYTHON3} ${TWITCHDL} clips ${STREAMER} --json --all | ${UNI2ASCII} -a U -q > ${DOWNLOAD_DIR}/${STREAMER}/twitchclips.${STREAMER}.json
 
 
 ## Parse list json
