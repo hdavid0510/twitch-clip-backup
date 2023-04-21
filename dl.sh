@@ -96,7 +96,7 @@ fi
 
 ## Get twitch-dl
 
-TWITCHDL_REPO="https://github.com/ihabunek/twitch-dl/releases/download/2.0.1/twitch-dl.2.0.1.pyz"
+TWITCHDL_REPO="https://github.com/ihabunek/twitch-dl/releases/download/2.1.2/twitch-dl.2.1.2.pyz"
 TWITCHDL="${DOWNLOAD_DIR}/twitch-dl"
 
 echo -e "\n\e[93mFetching twitch-dl\e[0m"
